@@ -34,12 +34,14 @@ export default class BotNarrateCommand {
   execute = async (ctx: Context) => {
     await ctx.replyWithChatAction("typing");
 
-    await ctx.deleteMessage();
-
     await ctx.reply(
       "Qual partida você gostaria de acompanhar?",
       Markup.inlineKeyboard(chunk(this.options(), 1))
     );
+
+    try {
+      await ctx.deleteMessage();
+    } catch (e) {}
   };
 
   watch = async (ctx: Context) => {
