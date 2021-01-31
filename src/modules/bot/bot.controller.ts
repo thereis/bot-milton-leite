@@ -9,6 +9,10 @@ export default class BotController {
     process.once("SIGTERM", () => this.botService.bot.stop("SIGTERM"));
   }
 
+  private loadMiddlewares = async () => {
+    await this.botService.registerMiddleWares();
+  };
+
   private loadCommands = async () => {
     return await this.botService.registerCommands();
   };
@@ -20,6 +24,7 @@ export default class BotController {
   load = async () => {
     console.log("Loading bot...");
     await this.loadCommands();
+    await this.loadMiddlewares();
     await this.launch();
     console.log("Loaded!");
   };

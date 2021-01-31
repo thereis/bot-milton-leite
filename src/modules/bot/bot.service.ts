@@ -1,13 +1,21 @@
 import { singleton } from "tsyringe";
-import { Telegraf } from "telegraf";
+import { Markup, session, Telegraf } from "telegraf";
 
 import UOLMatchesController from "../uol/matches/matches.controller";
+import BotNarrateCommand from "./commands/narrate.command";
 
 @singleton()
 export default class BotService {
-  bot = new Telegraf(process.env.TELEGRAM_API_KEY!, { telegram: {} });
+  bot = new Telegraf(process.env.TELEGRAM_API_KEY!);
 
-  constructor(private uolMatchesController: UOLMatchesController) {}
+  constructor(
+    private uolMatchesController: UOLMatchesController,
+    private botNarrateCommand: BotNarrateCommand
+  ) {}
+
+  registerMiddleWares = async () => {
+    this.bot.use(session());
+  };
 
   registerCommands = async () => {
     this.bot.command("hoje", async (ctx) => {
@@ -26,11 +34,7 @@ export default class BotService {
       });
     });
 
-    // Under construction
-    this.bot.command("narrar", async (ctx) => {
-      await ctx.replyWithChatAction("typing");
-
-      //   UOLBotService.watchMatch(113149, (message: string) => ctx.reply(message));
-    });
+    this.bot.command("narrar", this.botNarrateCommand.execute);
+    this.bot.action(/watch/g, this.botNarrateCommand.watch);
   };
 }

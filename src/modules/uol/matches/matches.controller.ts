@@ -4,7 +4,7 @@ import { LEAGUES, MATCH_UPDATER_TIMEOUT } from "../constants";
 import { formatTodayMatch, formatUpcomingMatch } from "../utils/formatter";
 
 import UOLMatchesService from "./matches.service";
-import UOLLiveMatchController from "../live/live.service";
+import UOLLiveMatchService from "../live/live.service";
 
 @singleton()
 export default class UOLMatchesController {
@@ -12,7 +12,7 @@ export default class UOLMatchesController {
 
   constructor(
     private uolService: UOLMatchesService,
-    private uolLiveMatch: UOLLiveMatchController
+    private uolLiveMatch: UOLLiveMatchService
   ) {
     this.matchUpdater();
   }
@@ -57,9 +57,9 @@ export default class UOLMatchesController {
 
   // Under construction
   watchMatch = async (id: number, sendReply: any) => {
-    const connnection = await this.uolLiveMatch.startup(id);
+    const connection = await this.uolLiveMatch.startup(id);
 
-    connnection.on("message", (data) => {
+    connection.on("message", (data) => {
       const message = this.uolLiveMatch.formatData(data);
 
       if (message) {

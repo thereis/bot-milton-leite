@@ -1,12 +1,14 @@
 import { autoInjectable } from "tsyringe";
 
 import WebSocket from "ws";
+import { UOLWSMatchEvent } from "../../../models/uol/UOLWSMatchEvent";
+import { formatTimelineMessage } from "../utils/formatter";
 
 @autoInjectable()
-export default class UOLLiveMatchController {
+export default class UOLLiveMatchService {
   private connection!: WebSocket;
 
-  connect = (id: number) =>
+  private connect = (id: number) =>
     new Promise((resolve, reject) => {
       const socket = new WebSocket(
         `wss://rtw.uol.com/sub?id=placar-futebol-${id}`
@@ -35,12 +37,12 @@ export default class UOLLiveMatchController {
 
   formatData = (data: any) => {
     const parsedData = JSON.parse(data);
-    console.log("data: ", data);
 
-    const minuteByMinute = parsedData?.["subchannels"]?.["minute-by-minute"];
+    const event = new UOLWSMatchEvent({ ...parsedData });
+    const feed = event.subchannels["minute-by-minute"];
 
-    if (!minuteByMinute) return;
+    if (feed && feed.timeline.length === 0) return;
 
-    return minuteByMinute["timeline"]?.[0].text;
+    return formatTimelineMessage(feed);
   };
 }
