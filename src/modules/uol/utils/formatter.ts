@@ -5,6 +5,12 @@ import brazilianLocale from "date-fns/locale/pt-BR";
 
 import * as constants from "../constants";
 
+export const formatTodayMatch = (match: Match): string => {
+  let message = `⚽ <b>${match.time1["nome-completo"]}</b> x <b>${match.time2["nome-completo"]}</b> às <b>${match.horario}</b> (${match.estadio})`;
+
+  return message;
+};
+
 export const formatUpcomingMatch = (match: Match): string => {
   const parsedDate = parse(match.data, constants.DATE_FORMAT, new Date());
   let message = "";

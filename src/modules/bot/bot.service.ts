@@ -5,7 +5,7 @@ import UOLMatchesController from "../uol/matches/matches.controller";
 
 @singleton()
 export default class BotService {
-  bot = new Telegraf(process.env.TELEGRAM_API_KEY!);
+  bot = new Telegraf(process.env.TELEGRAM_API_KEY!, { telegram: {} });
 
   constructor(private uolMatchesController: UOLMatchesController) {}
 
@@ -13,7 +13,9 @@ export default class BotService {
     this.bot.command("hoje", async (ctx) => {
       await ctx.replyWithChatAction("typing");
 
-      ctx.reply(this.uolMatchesController.getTodayMatches());
+      ctx.reply(this.uolMatchesController.getTodayMatches(), {
+        parse_mode: "HTML",
+      });
     });
 
     this.bot.command("proximas_partidas", async (ctx) => {
@@ -21,7 +23,6 @@ export default class BotService {
 
       ctx.reply(this.uolMatchesController.getUpcomingMatches(), {
         parse_mode: "HTML",
-        disable_web_page_preview: true,
       });
     });
 

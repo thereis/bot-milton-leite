@@ -1,7 +1,7 @@
 import { autoInjectable } from "tsyringe";
 
 import { LEAGUES } from "../constants";
-import { formatUpcomingMatch } from "../utils/formatter";
+import { formatTodayMatch, formatUpcomingMatch } from "../utils/formatter";
 
 import UOLMatchesService from "./matches.service";
 import UOLLiveMatchController from "../live/live.service";
@@ -23,12 +23,11 @@ export default class UOLMatchesController {
       return "Nenhuma partida do brasileirão acontecendo hoje!";
     }
 
-    const partidas = matches.map(
-      (match) =>
-        `${match.time1["nome-completo"]} x ${match.time2["nome-completo"]}`
-    );
+    const partidas = matches.map((match) => formatTodayMatch(match));
 
-    return partidas.join("\n");
+    return `<b>As partidas de hoje no Brasileirão:</b>\n\n${partidas.join(
+      "\n"
+    )}`;
   };
 
   getUpcomingMatches = () => {
