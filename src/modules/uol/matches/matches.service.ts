@@ -30,6 +30,10 @@ export default class UOLMatchesService {
     return this.matches;
   };
 
+  reload = async () => {
+    return await this.load();
+  };
+
   reset = () => {
     this.filteredMatches = this.matches;
     return this;

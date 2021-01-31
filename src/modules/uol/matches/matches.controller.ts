@@ -1,17 +1,30 @@
-import { autoInjectable } from "tsyringe";
+import { singleton } from "tsyringe";
 
-import { LEAGUES } from "../constants";
+import { LEAGUES, MATCH_UPDATER_TIMEOUT } from "../constants";
 import { formatTodayMatch, formatUpcomingMatch } from "../utils/formatter";
 
 import UOLMatchesService from "./matches.service";
 import UOLLiveMatchController from "../live/live.service";
 
-@autoInjectable()
+@singleton()
 export default class UOLMatchesController {
+  private reloadInterval?: NodeJS.Timeout;
+
   constructor(
     private uolService: UOLMatchesService,
     private uolLiveMatch: UOLLiveMatchController
-  ) {}
+  ) {
+    this.matchUpdater();
+  }
+
+  matchUpdater = () => {
+    if (!this.reloadInterval) {
+      this.reloadInterval = setInterval(
+        () => this.reload(),
+        MATCH_UPDATER_TIMEOUT
+      );
+    }
+  };
 
   getTodayMatches = () => {
     const matches = this.uolService
@@ -61,5 +74,13 @@ export default class UOLMatchesController {
     await this.uolService.load();
 
     console.log("Loaded!");
+  };
+
+  reload = async () => {
+    console.log("Reloading matches...");
+
+    await this.uolService.reload();
+
+    console.log("Reloaded!");
   };
 }
