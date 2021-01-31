@@ -5,7 +5,9 @@
   "author": "Lucas Reis <thereis@live.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsnd --respawn ./src/app.ts"
+    "dev": "tsnd --respawn ./src/app.ts",
+    "build": "tsc",
+    "start": "node ./dist/app.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
