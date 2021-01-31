@@ -2,6 +2,10 @@
 
 This bot was originally created to narrate soccer matches from Brasileirão Série A. But the main idea is under development.
 
+## Wanna test it?
+
+If you just want to test it, just chat with me on Telegram! Just search for: `@MiltonLeite_bot` and start chatting!
+
 # Current commands
 
 | Command            | Description                                              |
