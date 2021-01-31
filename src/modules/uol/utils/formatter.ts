@@ -4,7 +4,10 @@ import { parse, format } from "date-fns";
 import brazilianLocale from "date-fns/locale/pt-BR";
 
 import * as constants from "../constants";
-import { MinuteByMinute } from "../../../models/uol/MinuteByMinute";
+import {
+  MatchStageEnum,
+  MinuteByMinute,
+} from "../../../models/uol/MinuteByMinute";
 
 export const formatTodayMatch = (match: Match): string => {
   let message = `⚽ <b>${match.time1["nome-completo"]}</b> x <b>${match.time2["nome-completo"]}</b> às <b>${match.horario}</b> (Rodada: ${match.rodada})`;
@@ -31,9 +34,20 @@ export const formatUpcomingMatch = (match: Match): string => {
 export const formatTimelineMessage = (feed: MinuteByMinute) => {
   const timeline = feed.timeline[0];
 
+  let stage = "";
   let message = "";
 
-  message += `⏰ ${timeline.minute}' do ${timeline["match-stage"]} tempo\n`;
+  switch (timeline["match-stage"]) {
+    case MatchStageEnum.INTERVAL:
+      stage = "Intervalo";
+      break;
+
+    default:
+      stage = `${timeline.minute}' do ${timeline["match-stage"]} tempo`;
+      break;
+  }
+
+  message += `⏰ ${stage}\n`;
   message += `⚽ ${feed.goals.home} x ${feed.goals.away}\n`;
   message += `📝 ${timeline.text}`;
 

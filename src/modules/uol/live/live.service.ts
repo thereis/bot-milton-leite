@@ -28,9 +28,9 @@ export default class UOLLiveMatchService {
       return this.connection;
     }
 
-    console.log("Connecting to web socket...");
+    console.log(`[${id}] Connecting to web socket...`);
     await this.connect(id);
-    console.log("Connected!");
+    console.log(`[${id}] Connected!`);
 
     return this.connection;
   };

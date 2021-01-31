@@ -1,3 +1,9 @@
+export enum MatchStageEnum {
+  FIRST_HALF = 1,
+  SECOND_HALF = 2,
+  INTERVAL = 5,
+}
+
 export interface MinuteByMinuteEvent {
   id: number;
   published: number;
@@ -9,7 +15,7 @@ export interface MinuteByMinuteEvent {
 }
 
 export class MinuteByMinute {
-  "match-stage": number;
+  "match-stage": MatchStageEnum;
 
   goals!: {
     home: number;
