@@ -1,0 +1,25 @@
+{
+  "name": "cleber-machado-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Lucas Reis <thereis@live.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsnd --respawn ./src/app.ts"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "date-fns": "^2.16.1",
+    "node-telegram-bot-api": "^0.51.0",
+    "telegraf": "^4.0.2",
+    "tsyringe": "^4.4.0",
+    "ws": "^7.4.2"
+  },
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.51.0",
+    "@types/ws": "^7.4.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^4.1.3"
+  }
+}

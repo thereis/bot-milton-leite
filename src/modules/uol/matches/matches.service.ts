@@ -1,0 +1,100 @@
+import axios from "axios";
+
+import { Match } from "../../../models/Match";
+import { format, parse, isAfter } from "date-fns";
+
+import * as constants from "../constants";
+import { singleton } from "tsyringe";
+
+@singleton()
+export default class UOLMatchesService {
+  private loaded: boolean = false;
+
+  private matches: Match[] = [];
+  private filteredMatches: Match[] = [];
+  private today = format(new Date(), constants.DATE_FORMAT);
+
+  private matchesUrl: string =
+    "https://www.uol.com.br/esporte/service/?loadComponent=match-service&contentType=json";
+
+  constructor() {}
+
+  load = async (): Promise<Match[]> => {
+    const request = await axios.get(this.matchesUrl);
+    const response = request.data;
+
+    this.matches = response.matches;
+    this.filteredMatches = response.matches;
+    this.loaded = true;
+
+    return this.matches;
+  };
+
+  reset = () => {
+    this.filteredMatches = this.matches;
+    return this;
+  };
+
+  getLoadedMatches() {
+    return this.matches;
+  }
+
+  getMatches() {
+    const matches = this.filteredMatches;
+    this.filteredMatches = this.matches;
+    return matches;
+  }
+
+  filterByIdCompeticao = (id: string) => {
+    this.filteredMatches = this.filteredMatches.filter(
+      (match) => match["id-competicao"] === id
+    );
+
+    return this;
+  };
+
+  filterByCompeticao = (competicao: string) => {
+    this.filteredMatches = this.filteredMatches.filter(
+      (match) => match.competicao === competicao
+    );
+
+    return this;
+  };
+
+  filterByRodada = (rodada: number) => {
+    this.filteredMatches = this.filteredMatches.filter(
+      (match) => match.rodada === rodada
+    );
+
+    return this;
+  };
+
+  filterByTodayMatches = () => {
+    const today = this.today;
+
+    this.filteredMatches = this.filteredMatches.filter(
+      (match) => match.data === today
+    );
+
+    return this;
+  };
+
+  filterByDate = (date?: string) => {
+    const today = parse(date ?? this.today, constants.DATE_FORMAT, new Date());
+
+    this.filteredMatches = this.filteredMatches.filter((match) => {
+      const data = parse(match.data, constants.DATE_FORMAT, new Date());
+      return isAfter(data, today);
+    });
+
+    return this;
+  };
+
+  sortByDate = () => {
+    this.filteredMatches = this.filteredMatches.sort(
+      (match, nextMatch) => +match.data - +nextMatch.data
+    );
+
+    return this;
+  };
+}
