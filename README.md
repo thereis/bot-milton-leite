@@ -46,4 +46,4 @@ export TELEGRAM_API_KEY=YOUR_KEY_HERE && yarn start
 
 # Credits
 
-Special thanks to **Ricardo Ribeiro** because it was his idea. I just replicated it in NodeJS ;)
+Special thanks to **[Ricardo Ribeiro](https://github.com/ricardoar7)** because it was his idea. I just replicated it in NodeJS ;)
