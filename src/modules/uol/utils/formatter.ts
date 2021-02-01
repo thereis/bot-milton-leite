@@ -75,13 +75,15 @@ const formatEventText = (match: Match, event: MinuteByMinuteEvent) => {
     case MatchEventSubType.YELLOW_CARD:
       message += `🟨 Cartão amarelo para o jogador do ${team["nome-completo"]}!`;
       message += `📝 ${event.text}`;
-
       break;
 
     case MatchEventSubType.RED_CARD:
       message += `🟥 Cartão vermelho para o jogador do ${team["nome-completo"]}!`;
       message += `📝 ${event.text}`;
       break;
+
+    case MatchEventSubType.SUBSTITUTION:
+      message += `🔄 Substituição no ${team["nome-completo"]}.`;
   }
 
   return message;
