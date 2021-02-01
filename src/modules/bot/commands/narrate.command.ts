@@ -5,17 +5,15 @@ import { LEAGUES } from "../../uol/constants";
 import chunk from "lodash/chunk";
 
 import UOLMatchesService from "../../uol/matches/matches.service";
-import BotService from "../bot.service";
+import UOLLiveMatchesController from "../../uol/live/live.controller";
 import { CallbackQuery } from "telegraf/typings/telegram-types";
-import UOLLiveMatchService from "../../uol/live/live.service";
-import UOLMatchesController from "../../uol/matches/matches.controller";
 
 @autoInjectable()
 export default class BotNarrateCommand {
   constructor(
-    @inject(delay(() => BotService)) private botService: BotService,
-    private uolMatchesService: UOLMatchesService,
-    private uolMatchesController: UOLMatchesController
+    @inject(delay(() => UOLLiveMatchesController))
+    private uolLiveMatchesController: UOLLiveMatchesController,
+    private uolMatchesService: UOLMatchesService
   ) {}
 
   options = () => {
@@ -46,17 +44,29 @@ export default class BotNarrateCommand {
 
   watch = async (ctx: Context) => {
     const { data } = ctx.callbackQuery as CallbackQuery.DataCallbackQuery;
-    const { id } = JSON.parse(data);
+    const { id: matchId } = JSON.parse(data);
+    const chatId = ctx.chat?.id!;
+    const messageId = ctx.callbackQuery?.message?.message_id!;
 
-    ctx.telegram.answerCbQuery(
+    const isAlreadyWatching = this.uolLiveMatchesController.isAlreadyWatching(
+      chatId
+    );
+
+    if (isAlreadyWatching) {
+      await ctx.reply(
+        "Essa conversa já está acompanhando a uma partida. Vamos te colocar pra acompanhar a nova partida escolhida ;)"
+      );
+
+      this.uolLiveMatchesController.removeChatIdFromContainer(matchId, chatId);
+    }
+
+    await ctx.telegram.answerCbQuery(
       ctx.callbackQuery?.id!,
       "Preparando conteúdo..."
     );
 
-    ctx.deleteMessage(ctx.callbackQuery?.message?.message_id!);
+    await ctx.deleteMessage(messageId);
 
-    await this.uolMatchesController.watchMatch(+id, (message: string) =>
-      ctx.reply(message)
-    );
+    this.uolLiveMatchesController.addChatIdToMatchContainer(matchId, chatId);
   };
 }

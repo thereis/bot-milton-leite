@@ -10,10 +10,7 @@ import UOLLiveMatchService from "../live/live.service";
 export default class UOLMatchesController {
   private reloadInterval?: NodeJS.Timeout;
 
-  constructor(
-    private uolService: UOLMatchesService,
-    private uolLiveMatch: UOLLiveMatchService
-  ) {
+  constructor(private uolService: UOLMatchesService) {
     this.matchUpdater();
   }
 
@@ -53,19 +50,6 @@ export default class UOLMatchesController {
       .join("\n");
 
     return `<b>Próximas partidas do Brasileirão Série A:\n${matches}</b>`;
-  };
-
-  // Under construction
-  watchMatch = async (id: number, sendReply: any) => {
-    const connection = await this.uolLiveMatch.startup(id);
-
-    connection.on("message", (data) => {
-      const message = this.uolLiveMatch.formatData(data);
-
-      if (message) {
-        sendReply(message);
-      }
-    });
   };
 
   load = async () => {

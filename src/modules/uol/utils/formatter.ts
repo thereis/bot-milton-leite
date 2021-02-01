@@ -7,6 +7,7 @@ import * as constants from "../constants";
 import {
   MatchStageEnum,
   MinuteByMinute,
+  MinuteByMinuteEvent,
 } from "../../../models/uol/MinuteByMinute";
 
 export const formatTodayMatch = (match: Match): string => {
@@ -31,25 +32,47 @@ export const formatUpcomingMatch = (match: Match): string => {
   return message;
 };
 
-export const formatTimelineMessage = (feed: MinuteByMinute) => {
-  const timeline = feed.timeline[0];
-
-  let stage = "";
+const getMatchStageMessage = (
+  stage: MatchStageEnum,
+  timeline: MinuteByMinuteEvent
+) => {
   let message = "";
 
-  switch (timeline["match-stage"]) {
+  switch (stage) {
     case MatchStageEnum.INTERVAL:
-      stage = "Intervalo";
+      message = "Intervalo";
+      break;
+
+    case MatchStageEnum.ENDED:
+      message = "Fim de jogo!";
       break;
 
     default:
-      stage = `${timeline.minute}' do ${timeline["match-stage"]} tempo`;
+      message = `${timeline.minute}' do ${timeline["match-stage"]} tempo`;
       break;
   }
 
-  message += `⏰ ${stage}\n`;
-  message += `⚽ ${feed.goals.home} x ${feed.goals.away}\n`;
+  return message;
+};
+
+export const formatTimelineMessage = (match: Match, feed: MinuteByMinute) => {
+  const timeline = feed.timeline[0];
+
+  let message = "";
+
+  message += `⏰ ${getMatchStageMessage(timeline["match-stage"], timeline)}\n`;
+  message += `⚽ ${match.time1["nome-completo"]} ${feed.goals.home} x ${feed.goals.away} ${match.time2["nome-completo"]}\n`;
   message += `📝 ${timeline.text}`;
+
+  return message;
+};
+
+export const formatEndedMatch = (match: Match, feed: MinuteByMinute) => {
+  let message = "";
+
+  message += `⚠️ Esta partida já acabou!\n`;
+  message += `📣 Rodada: ${match.rodada}\n`;
+  message += `⚽ ${match.time1["nome-completo"]} ${feed.goals.home} x ${feed.goals.away} ${match.time2["nome-completo"]}`;
 
   return message;
 };

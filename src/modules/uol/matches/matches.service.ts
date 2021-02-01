@@ -101,4 +101,8 @@ export default class UOLMatchesService {
 
     return this;
   };
+
+  getById = (id: number) => {
+    return this.matches.find((match) => match.id === id);
+  };
 }
