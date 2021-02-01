@@ -8,3 +8,4 @@ export enum LEAGUES {
 }
 
 export const MATCH_UPDATER_TIMEOUT = 60000 * 60 * 12; // 12h
+export const WS_MAX_TIMEOUT = 60000 * 5; // 5min

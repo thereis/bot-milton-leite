@@ -9,6 +9,7 @@ import {
 
 import { Match } from "../../../models/Match";
 import { UOLWSMatchEvent } from "../../../models/uol/UOLWSMatchEvent";
+import { WS_MAX_TIMEOUT } from "../constants";
 
 interface IUOLLiveMatchService {
   matchId: number;
@@ -27,6 +28,7 @@ export default class UOLLiveMatchService {
   private lastMessage: string = "";
   private lastEvent!: UOLWSMatchEvent;
   private onClose!: () => void;
+  private pingTimeout?: NodeJS.Timeout;
 
   constructor({
     matchId,
@@ -58,8 +60,12 @@ export default class UOLLiveMatchService {
 
         this.connection = socket;
 
+        this.heartbeat();
+
         resolve(socket);
       };
+
+      socket.on("ping", this.heartbeat);
 
       socket.onclose = (error: WebSocket.CloseEvent) => {
         reject(this.shutdown(error));
@@ -78,6 +84,14 @@ export default class UOLLiveMatchService {
     connection.on("message", this.handleMessage);
 
     return connection;
+  };
+
+  private heartbeat = () => {
+    this.pingTimeout && clearTimeout(this.pingTimeout);
+
+    this.pingTimeout = setTimeout(() => {
+      this.connection.terminate();
+    }, WS_MAX_TIMEOUT);
   };
 
   shutdown = (error: WebSocket.CloseEvent) => {
