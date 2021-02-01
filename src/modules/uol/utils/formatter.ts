@@ -114,3 +114,13 @@ export const formatEndedMatch = (match: Match, feed: MinuteByMinute) => {
 
   return message;
 };
+
+export const formatUnexpectedEndedMatch = (match: Match) => {
+  let message = "";
+
+  message += `⚠️ Esta partida ainda não começou ou não está disponível!\n`;
+  message += `📣 Rodada: ${match.rodada}\n`;
+  message += `⚽ ${match.time1["nome-completo"]} x ${match.time2["nome-completo"]}`;
+
+  return message;
+};

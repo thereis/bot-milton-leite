@@ -1,7 +1,11 @@
 import WebSocket from "ws";
 import Telegram from "telegraf/typings/telegram";
 
-import { formatEndedMatch, formatTimelineMessage } from "../utils/formatter";
+import {
+  formatEndedMatch,
+  formatTimelineMessage,
+  formatUnexpectedEndedMatch,
+} from "../utils/formatter";
 
 import { Match } from "../../../models/Match";
 import { UOLWSMatchEvent } from "../../../models/uol/UOLWSMatchEvent";
@@ -78,12 +82,16 @@ export default class UOLLiveMatchService {
   shutdown = (error: WebSocket.CloseEvent) => {
     this.connection && this.connection.close();
 
-    this.notifyChatIds(
-      formatEndedMatch(
-        this.match,
-        this.lastEvent.subchannels["minute-by-minute"]
-      )
-    );
+    if (this.lastEvent) {
+      this.notifyChatIds(
+        formatEndedMatch(
+          this.match,
+          this.lastEvent.subchannels["minute-by-minute"]
+        )
+      );
+    } else {
+      this.notifyChatIds(formatUnexpectedEndedMatch(this.match));
+    }
 
     console.log(
       `[${this.matchId}]: Connection closed. Reason: ${error.code}-${error.reason}`
@@ -109,6 +117,8 @@ export default class UOLLiveMatchService {
 
   handleMessage = (rawData: any) => {
     const data = JSON.parse(rawData);
+
+    if (data && data.invalidChannel) return this.connection.close();
 
     const event = new UOLWSMatchEvent({ ...data });
     const feed = event.subchannels?.["minute-by-minute"];
