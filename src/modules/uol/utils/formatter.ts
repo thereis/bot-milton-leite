@@ -5,6 +5,7 @@ import brazilianLocale from "date-fns/locale/pt-BR";
 
 import * as constants from "../constants";
 import {
+  MatchEventSubType,
   MatchStageEnum,
   MinuteByMinute,
   MinuteByMinuteEvent,
@@ -39,16 +40,47 @@ const getMatchStageMessage = (
   let message = "";
 
   switch (stage) {
+    case MatchStageEnum.FIRST_HALF:
+    case MatchStageEnum.SECOND_HALF:
+      message = `${timeline.minute}' do ${timeline["match-stage"]}° tempo`;
+      break;
+
     case MatchStageEnum.INTERVAL:
       message = "Intervalo";
       break;
 
     case MatchStageEnum.ENDED:
+    case MatchStageEnum.AFTER_GAME:
       message = "Fim de jogo!";
       break;
+  }
 
-    default:
-      message = `${timeline.minute}' do ${timeline["match-stage"]} tempo`;
+  return message;
+};
+
+const formatEventText = (match: Match, event: MinuteByMinuteEvent) => {
+  let message = "";
+  const team = event.team === "away" ? match.time1 : match.time2 ?? undefined;
+
+  switch (event.subtype) {
+    case MatchEventSubType.GOAL:
+      message += `⚠️ GOOOOOOOL! do ${team["nome-completo"]}!`;
+      message += `📝 ${event.text}`;
+      break;
+
+    case MatchEventSubType.TEXT:
+      message = `📝 ${event.text}`;
+      break;
+
+    case MatchEventSubType.YELLOW_CARD:
+      message += `🟨 Cartão amarelo para o jogador do ${team["nome-completo"]}!`;
+      message += `📝 ${event.text}`;
+
+      break;
+
+    case MatchEventSubType.RED_CARD:
+      message += `🟥 Cartão vermelho para o jogador do ${team["nome-completo"]}!`;
+      message += `📝 ${event.text}`;
       break;
   }
 
@@ -64,7 +96,7 @@ export const formatTimelineMessage = (match: Match, feed: MinuteByMinute) => {
 
   message += `⏰ ${getMatchStageMessage(timeline["match-stage"], timeline)}\n`;
   message += `⚽ ${match.time1["nome-completo"]} ${feed.goals.home} x ${feed.goals.away} ${match.time2["nome-completo"]}\n`;
-  message += `📝 ${timeline.text}`;
+  message += `${formatEventText(match, timeline)}`;
 
   return message;
 };
