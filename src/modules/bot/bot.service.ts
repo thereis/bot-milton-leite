@@ -26,6 +26,14 @@ export default class BotService {
       });
     });
 
+    this.bot.command("resultados", async (ctx) => {
+      await ctx.replyWithChatAction("typing");
+
+      ctx.reply(this.uolMatchesController.getMatchResults(), {
+        parse_mode: "HTML",
+      });
+    });
+
     this.bot.command("proximas_partidas", async (ctx) => {
       await ctx.replyWithChatAction("typing");
 

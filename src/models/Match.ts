@@ -1,5 +1,9 @@
 import { Team } from "./Team";
 
+export enum MatchStatusEnum {
+  COMPLETED = "3",
+}
+
 export class Match {
   "competicao": string;
   "id-competicao": string;
@@ -25,4 +29,6 @@ export class Match {
   "classificou-gols-fora": boolean;
   "id": number;
   "datahora": number;
+  status?: MatchStatusEnum;
+  coverage?: number;
 }

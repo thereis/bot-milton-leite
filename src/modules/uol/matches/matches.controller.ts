@@ -1,10 +1,14 @@
 import { singleton } from "tsyringe";
 
 import { LEAGUES, MATCH_UPDATER_TIMEOUT } from "../constants";
-import { formatTodayMatch, formatUpcomingMatch } from "../utils/formatter";
+import {
+  formatMatchResult,
+  formatTodayMatch,
+  formatUpcomingMatch,
+} from "../utils/formatter";
 
 import UOLMatchesService from "./matches.service";
-import UOLLiveMatchService from "../live/live.service";
+import { MatchStatusEnum } from "../../../models/Match";
 
 @singleton()
 export default class UOLMatchesController {
@@ -33,9 +37,22 @@ export default class UOLMatchesController {
       return "Nenhuma partida do brasileirão acontecendo hoje!";
     }
 
-    const partidas = matches.map((match) => formatTodayMatch(match));
+    const results = matches.map((match) => formatTodayMatch(match));
 
-    return `<b>As partidas de hoje no Brasileirão:</b>\n\n${partidas.join(
+    return `<b>As partidas de hoje no Brasileirão:</b>\n\n${results.join(
+      "\n"
+    )}`;
+  };
+
+  getMatchResults = () => {
+    const matches = this.uolService
+      .filterByIdCompeticao(LEAGUES.BRASILEIRAO)
+      .filterByStatus(MatchStatusEnum.COMPLETED)
+      .getMatches();
+
+    const results = matches.map((match) => formatMatchResult(match));
+
+    return `<b>Resultados das partidas do Brasileirão:</b>\n\n${results.join(
       "\n"
     )}`;
   };

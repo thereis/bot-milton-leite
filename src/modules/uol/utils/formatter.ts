@@ -12,9 +12,11 @@ import {
 } from "../../../models/uol/MinuteByMinute";
 
 export const formatTodayMatch = (match: Match): string => {
-  let message = `⚽ <b>${match.time1["nome-completo"]}</b> x <b>${match.time2["nome-completo"]}</b> às <b>${match.horario}</b> (Rodada: ${match.rodada})`;
+  return `⚽ <b>${match.time1["nome-completo"]}</b> x <b>${match.time2["nome-completo"]}</b> às <b>${match.horario}</b> (Rodada: ${match.rodada})`;
+};
 
-  return message;
+export const formatMatchResult = (match: Match): string => {
+  return `⚽ <b>${match.time1["nome-completo"]} ${match.placar1}</b> x <b>${match.placar2} ${match.time2["nome-completo"]}</b> (Rodada: ${match.rodada})`;
 };
 
 export const formatUpcomingMatch = (match: Match): string => {

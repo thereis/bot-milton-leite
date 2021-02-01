@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { Match } from "../../../models/Match";
+import { Match, MatchStatusEnum } from "../../../models/Match";
 import { format, parse, isAfter } from "date-fns";
 
 import * as constants from "../constants";
@@ -52,6 +52,14 @@ export default class UOLMatchesService {
   filterByIdCompeticao = (id: string) => {
     this.filteredMatches = this.filteredMatches.filter(
       (match) => match["id-competicao"] === id
+    );
+
+    return this;
+  };
+
+  filterByStatus = (status: MatchStatusEnum = MatchStatusEnum.COMPLETED) => {
+    this.filteredMatches = this.filteredMatches.filter(
+      (match) => match.status === status
     );
 
     return this;

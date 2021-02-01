@@ -2,3 +2,4 @@ hoje - Exibe quais partidas do Brasileirão acontecerão hoje.
 proximas_partidas - Exibe as partidas que acontecerão hoje e nos próximos dias.
 narrar - Escolha uma partida e fique por dentro de todos os acontecimentos dela.
 parar - Pare a narração.
+resultados - Veja os últimos resultados do Brasileirão.
