@@ -39,11 +39,10 @@ export default class UOLLiveMatchService {
     this.match = match;
     this.telegram = telegram;
     this.onClose = onClose;
-    this.chatIds = [chatId];
 
     console.log(`[${matchId}] Live match`);
 
-    this.startup(matchId);
+    this.startup(matchId, chatId);
   }
 
   private connect = (id: number): Promise<WebSocket> =>
@@ -67,12 +66,14 @@ export default class UOLLiveMatchService {
       };
     });
 
-  startup = async (id: number) => {
+  startup = async (matchId: number, chatId: number) => {
     if (this.connection && this.connection.OPEN) {
       return this.connection;
     }
 
-    const connection = await this.connect(id);
+    const connection = await this.connect(matchId);
+
+    this.addChatId(chatId);
 
     connection.on("message", this.handleMessage);
 
@@ -94,7 +95,7 @@ export default class UOLLiveMatchService {
     }
 
     console.log(
-      `[${this.matchId}]: Connection closed. Reason: ${error.code}-${error.reason}`
+      `[${this.matchId}] Connection closed. Reason: ${error.code}-${error.reason}`
     );
 
     this.onClose && this.onClose();
@@ -110,7 +111,7 @@ export default class UOLLiveMatchService {
     this.chatIds.push(chatId);
     this.notifyChatId(chatId, this.lastMessage);
 
-    console.log(`[${this.matchId}]: ${chatId} has joined to the channel.`);
+    console.log(`[${this.matchId}] ${chatId} has joined to the channel.`);
 
     return this.chatIds;
   };
