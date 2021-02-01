@@ -56,6 +56,8 @@ const getMatchStageMessage = (
 };
 
 export const formatTimelineMessage = (match: Match, feed: MinuteByMinute) => {
+  if (!feed) return;
+
   const timeline = feed.timeline[0];
 
   let message = "";

@@ -93,9 +93,12 @@ export default class UOLLiveMatchesController {
   removeChatIdFromContainer = (matchId: number, chatId: number) => {
     const container = this.getMatchContainer(matchId);
 
-    if (!container) return;
+    if (container) {
+      container.service.removeChatId(chatId);
+    }
 
-    container.service.removeChatId(chatId);
-    this.removeChatIdFromContainer(matchId, chatId);
+    this.connectedToMatches = this.connectedToMatches.filter(
+      (connection) => connection.chatId != chatId
+    );
   };
 }

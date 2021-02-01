@@ -35,6 +35,7 @@ export default class BotService {
     });
 
     this.bot.command("narrar", this.botNarrateCommand.execute);
+    this.bot.command("parar", this.botNarrateCommand.stop);
     this.bot.action(/watch/g, this.botNarrateCommand.watch);
   };
 }

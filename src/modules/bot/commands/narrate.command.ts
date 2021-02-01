@@ -29,6 +29,27 @@ export default class BotNarrateCommand {
       );
   };
 
+  stop = async (ctx: Context) => {
+    const chatId = ctx.chat?.id!;
+
+    const currentMatch = this.uolLiveMatchesController.isAlreadyWatching(
+      chatId
+    );
+
+    if (!currentMatch) {
+      return ctx.reply(
+        "Atualmente você não está acompanhando a nenhuma partida. Digite /narrar para acompanhar uma partida ao vivo."
+      );
+    }
+
+    this.uolLiveMatchesController.removeChatIdFromContainer(
+      currentMatch.matchId,
+      currentMatch.chatId
+    );
+
+    await ctx.reply("Você parou de acompanhar uma partida.");
+  };
+
   execute = async (ctx: Context) => {
     await ctx.replyWithChatAction("typing");
 

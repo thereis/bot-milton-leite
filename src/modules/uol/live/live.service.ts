@@ -44,14 +44,14 @@ export default class UOLLiveMatchService {
 
   private connect = (id: number): Promise<WebSocket> =>
     new Promise((resolve, reject) => {
-      console.log(`Connecting to web socket...`);
+      console.log(`[${this.matchId}] Connecting to web socket...`);
 
       const socket = new WebSocket(
         `wss://rtw.uol.com/sub?id=placar-futebol-${id}`
       );
 
       socket.onopen = () => {
-        console.log(`Connected!`);
+        console.log(`[${this.matchId}] Connected!`);
 
         this.connection = socket;
 
@@ -116,6 +116,8 @@ export default class UOLLiveMatchService {
     if (feed && feed.timeline.length === 0) return;
 
     const message = formatTimelineMessage(this.match, feed);
+
+    if (!message) return;
 
     this.lastMessage = message;
     this.lastEvent = event;
