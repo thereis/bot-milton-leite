@@ -64,7 +64,7 @@ const formatEventText = (match: Match, event: MinuteByMinuteEvent) => {
 
   switch (event.subtype) {
     case MatchEventSubType.GOAL:
-      message += `⚠️ GOOOOOOOL! do ${team["nome-completo"]}!`;
+      message += `⚠️ GOOOOOOOL! do ${team["nome-completo"]}!\n`;
       message += `📝 ${event.text}`;
       break;
 
@@ -73,12 +73,12 @@ const formatEventText = (match: Match, event: MinuteByMinuteEvent) => {
       break;
 
     case MatchEventSubType.YELLOW_CARD:
-      message += `🟨 Cartão amarelo para o jogador do ${team["nome-completo"]}!`;
+      message += `🟨 Cartão amarelo para o jogador do ${team["nome-completo"]}!\n`;
       message += `📝 ${event.text}`;
       break;
 
     case MatchEventSubType.RED_CARD:
-      message += `🟥 Cartão vermelho para o jogador do ${team["nome-completo"]}!`;
+      message += `🟥 Cartão vermelho para o jogador do ${team["nome-completo"]}!\n`;
       message += `📝 ${event.text}`;
       break;
 
