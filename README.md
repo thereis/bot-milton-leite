@@ -12,6 +12,9 @@ If you just want to test it, just chat with me on Telegram! Just search for: `@M
 | ------------------ | -------------------------------------------------------- |
 | /hoje              | It will display the all the matches for the current day. |
 | /proximas_partidas | It will display the week upcoming matches.               |
+| /narrar            | It will narrate a selected match.                        |
+| /parar             | It will stop to narrate the selected match.              |
+| /resultados        | It will display match results.                           |
 
 # Development mode
 
@@ -21,10 +24,16 @@ Install all the dependencies running the following command:
 To run this BOT you must have a created bot in Telegram. To create a new bot, just talk with the `@BotFather` on Telegram and copy the generated token.
 
 **Running on Windows**:
-`$env:TELEGRAM_API_KEY="YOUR KEY HERE"; yarn dev;`
+
+```sh
+$env:TELEGRAM_API_KEY="YOUR KEY HERE"; yarn dev;
+```
 
 **Running on MacOS**:
-`export TELEGRAM_API_KEY=YOUR_KEY_HERE && yarn dev`
+
+```sh
+export TELEGRAM_API_KEY=YOUR_KEY_HERE && yarn dev
+```
 
 # Production mode
 
