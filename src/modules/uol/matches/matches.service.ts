@@ -1,10 +1,13 @@
 import axios from "axios";
 
+import * as constants from "../constants";
+import groupBy from "lodash/groupBy";
+
 import { Match, MatchStatusEnum } from "../../../models/Match";
 import { format, parse, isAfter } from "date-fns";
 
-import * as constants from "../constants";
 import { singleton } from "tsyringe";
+import { Dictionary } from "lodash";
 
 @singleton()
 export default class UOLMatchesService {
@@ -12,6 +15,7 @@ export default class UOLMatchesService {
 
   private matches: Match[] = [];
   private filteredMatches: Match[] = [];
+  private groupedMatches: Dictionary<Match[]> = {};
   private today = format(new Date(), constants.DATE_FORMAT);
 
   private matchesUrl: string =
@@ -36,7 +40,19 @@ export default class UOLMatchesService {
 
   reset = () => {
     this.filteredMatches = this.matches;
+    this.groupedMatches = {};
+
     return this;
+  };
+
+  formatDate = (date: string) => {
+    const newDate = parse(
+      date ?? this.today,
+      constants.DATE_FORMAT,
+      new Date()
+    );
+
+    return format(newDate, constants.OUTPUT_DATE_FORMAT);
   };
 
   getLoadedMatches() {
@@ -45,7 +61,10 @@ export default class UOLMatchesService {
 
   getMatches() {
     const matches = this.filteredMatches;
+
     this.filteredMatches = this.matches;
+    this.groupedMatches = {};
+
     return matches;
   }
 
@@ -102,6 +121,14 @@ export default class UOLMatchesService {
     return this;
   };
 
+  filterByCoverage = () => {
+    this.filteredMatches = this.filteredMatches.filter(
+      (match) => match.coverage
+    );
+
+    return this;
+  };
+
   sortByDate = () => {
     this.filteredMatches = this.filteredMatches.sort(
       (match, nextMatch) => +match.data - +nextMatch.data
@@ -112,5 +139,20 @@ export default class UOLMatchesService {
 
   getById = (id: number) => {
     return this.matches.find((match) => match.id === id);
+  };
+
+  groupByData = () => {
+    this.groupedMatches = groupBy(this.filteredMatches, "data");
+
+    return this;
+  };
+
+  getGroupedMatches = () => {
+    const groupedMatches = this.groupedMatches;
+
+    this.filteredMatches = this.matches;
+    this.groupedMatches = {};
+
+    return groupedMatches;
   };
 }

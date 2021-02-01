@@ -4,6 +4,7 @@ import { parse, format } from "date-fns";
 import brazilianLocale from "date-fns/locale/pt-BR";
 
 import * as constants from "../constants";
+
 import {
   MatchEventSubType,
   MatchStageEnum,
@@ -19,18 +20,42 @@ export const formatMatchResult = (match: Match): string => {
   return `⚽ <b>${match.time1["nome-completo"]} ${match.placar1}</b> x <b>${match.placar2} ${match.time2["nome-completo"]}</b> (Rodada: ${match.rodada})`;
 };
 
-export const formatUpcomingMatch = (match: Match): string => {
-  const parsedDate = parse(match.data, constants.DATE_FORMAT, new Date());
+export const formatGroupedMatches = (title: string, content: string) => {
+  const divider = `-`.repeat(title.length).split("").join(" ");
   let message = "";
 
-  message += `------------------------------\n`;
+  message += `${divider}\n`;
+  message += `${title}\n`;
+  message += `${divider}\n`;
+  message += `${content}\n`;
+
+  return message;
+};
+
+export const formatUpcomingMatch = (
+  match: Match,
+  shouldDisplayDate: boolean = false
+): string => {
+  const parsedDate = parse(match.data, constants.DATE_FORMAT, new Date());
+
+  const matchDateAndDay = format(
+    parsedDate,
+    constants.OUTPUT_DATE_FORMAT_WITH_TIME,
+    {
+      locale: brazilianLocale,
+    }
+  );
+
+  let message = "";
+
   message += `📣 Rodada: ${match.rodada}\n`;
   message += `⚽ ${match.time1["nome-completo"]} x ${match.time2["nome-completo"]}\n`;
-  message += `📆 ${format(parsedDate, constants.OUTPUT_DATE_FORMAT, {
-    locale: brazilianLocale,
-  })} às ${match.horario}\n`;
+  message += `📆 ${
+    shouldDisplayDate
+      ? `${matchDateAndDay} às ${match.horario}`
+      : `Horário: <b>${match.horario}</b>`
+  }\n`;
   message += `🏟️ Estádio: ${match.estadio} (${match.local})\n`;
-  message += `------------------------------`;
 
   return message;
 };
@@ -62,12 +87,12 @@ const getMatchStageMessage = (
 
 const formatEventText = (match: Match, event: MinuteByMinuteEvent) => {
   let message = "";
-  const team = event.team === "away" ? match.time1 : match.time2 ?? undefined;
+  const team = event.team === "home" ? match.time1 : match.time2 ?? undefined;
 
   switch (event.subtype) {
     case MatchEventSubType.GOAL:
       message += `⚠️ GOOOOOOOL! do ${team["nome-completo"]}!\n`;
-      message += `📝 ${event.text}`;
+      event.text && (message += `📝 ${event.text}`);
       break;
 
     case MatchEventSubType.TEXT:

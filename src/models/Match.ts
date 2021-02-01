@@ -4,6 +4,10 @@ export enum MatchStatusEnum {
   COMPLETED = "3",
 }
 
+export enum MatchCoverageEnum {
+  FINISHED = 2,
+}
+
 export class Match {
   "competicao": string;
   "id-competicao": string;
@@ -30,5 +34,5 @@ export class Match {
   "id": number;
   "datahora": number;
   status?: MatchStatusEnum;
-  coverage?: number;
+  coverage?: MatchCoverageEnum;
 }

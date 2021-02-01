@@ -1,7 +1,9 @@
 import { singleton } from "tsyringe";
 
 import { LEAGUES, MATCH_UPDATER_TIMEOUT } from "../constants";
+
 import {
+  formatGroupedMatches,
   formatMatchResult,
   formatTodayMatch,
   formatUpcomingMatch,
@@ -58,15 +60,27 @@ export default class UOLMatchesController {
   };
 
   getUpcomingMatches = () => {
-    const matches = this.uolService
+    let upcomingMatches = "";
+
+    const groupedMatches = this.uolService
       .filterByIdCompeticao(LEAGUES.BRASILEIRAO)
       .filterByDate()
       .sortByDate()
-      .getMatches()
-      .map((match) => formatUpcomingMatch(match))
-      .join("\n");
+      .groupByData()
+      .getGroupedMatches();
 
-    return `<b>Próximas partidas do Brasileirão Série A:\n${matches}</b>`;
+    for (const [date, matches] of Object.entries(groupedMatches)) {
+      const upcomingMatchesText = matches
+        .map((match) => formatUpcomingMatch(match))
+        .join("\n");
+
+      upcomingMatches += formatGroupedMatches(
+        `Partidas no dia <b>${this.uolService.formatDate(date)}</b>`,
+        upcomingMatchesText
+      );
+    }
+
+    return upcomingMatches;
   };
 
   load = async () => {
