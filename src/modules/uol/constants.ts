@@ -6,4 +6,4 @@ export const LEAGUES = {
   BRASILEIRAO: "30",
 };
 
-export const MATCH_UPDATER_TIMEOUT = 60000 * 12; // 12h
+export const MATCH_UPDATER_TIMEOUT = 60000 * 60 * 12; // 12h
