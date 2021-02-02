@@ -90,6 +90,9 @@ export default class UOLLiveMatchService {
     this.pingTimeout && clearTimeout(this.pingTimeout);
 
     this.pingTimeout = setTimeout(() => {
+      console.log(
+        `[${this.matchId}] Terminating ${this.matchId} because of heartbeat.`
+      );
       this.connection.terminate();
     }, WS_MAX_TIMEOUT);
   };
@@ -150,6 +153,7 @@ export default class UOLLiveMatchService {
     this.notifyChatIds(message);
   };
 
+  // TODO: Something is throwing an error because message is empty
   notifyChatIds = (message: string) => {
     for (let i = 0; i < this.chatIds.length; i++) {
       const chatId = this.chatIds[i];
