@@ -60,8 +60,6 @@ export default class UOLLiveMatchService {
 
         this.connection = socket;
 
-        this.heartbeat();
-
         resolve(socket);
       };
 
