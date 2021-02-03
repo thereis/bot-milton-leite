@@ -23,7 +23,7 @@ export default class UOLMatchesController {
   matchUpdater = () => {
     if (!this.reloadInterval) {
       this.reloadInterval = setInterval(
-        () => this.reload(),
+        async () => await this.reload(),
         MATCH_UPDATER_TIMEOUT
       );
     }

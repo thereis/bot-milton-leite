@@ -1,36 +1,30 @@
-export interface IWSMatchTeam {
+import { MatchCoverageEnum, MatchStatusEnum } from "../Match";
+import { MatchStageEnum } from "./MinuteByMinute";
+
+export interface IWSPlacarTeam {
   id: number;
   "short-name": string;
   name: string;
   slug: string;
   image: string;
-  coach: {
-    id: number;
-    name: string;
-    image: string;
-  };
   color1: string;
   color2: string;
-  tag: {
-    name: string;
-    id: number;
-  };
+  goals: number;
 }
 
-export class WSMatch {
+export class WSPlacar {
   id!: number;
-  coverage!: number;
+  coverage!: MatchCoverageEnum;
+  status!: MatchStatusEnum;
+  "match-stage"!: MatchStageEnum;
   date!: number;
   stadium!: string;
+  local!: string;
   championship!: {
     id: number;
     name: string;
     slug: string;
     season: number;
-    tag: {
-      id: number;
-      name: string;
-    };
     stage: {
       id: number;
       name: string;
@@ -43,9 +37,9 @@ export class WSMatch {
       slug: string;
     };
   };
-
   teams!: {
-    home: IWSMatchTeam;
-    away: IWSMatchTeam;
+    home: IWSPlacarTeam;
+    away: IWSPlacarTeam;
   };
+  url!: string;
 }

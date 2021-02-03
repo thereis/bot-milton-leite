@@ -9,7 +9,7 @@ import {
 
 import { Match } from "../../../models/Match";
 import { UOLWSMatchEvent } from "../../../models/uol/UOLWSMatchEvent";
-import { WS_MAX_TIMEOUT } from "../constants";
+import * as constants from "../constants";
 
 interface IUOLLiveMatchService {
   matchId: number;
@@ -20,6 +20,7 @@ interface IUOLLiveMatchService {
 }
 
 export default class UOLLiveMatchService {
+  private channelName!: string;
   private matchId!: number;
   private match!: Match;
   private telegram!: Telegram;
@@ -41,18 +42,22 @@ export default class UOLLiveMatchService {
     this.match = match;
     this.telegram = telegram;
     this.onClose = onClose;
+    this.channelName = `placar-futebol-${matchId}`;
 
     console.log(`[${matchId}] Live match`);
 
-    this.startup(matchId, chatId);
+    this.startup(chatId);
   }
 
-  private connect = (id: number): Promise<WebSocket> =>
+  private connect = (): Promise<WebSocket> =>
     new Promise((resolve, reject) => {
       console.log(`[${this.matchId}] Connecting to web socket...`);
 
       const socket = new WebSocket(
-        `wss://rtw.uol.com/sub?id=placar-futebol-${id}`
+        `wss://rtw.uol.com/sub?id=${this.channelName}`,
+        {
+          timeout: constants.WS_MAX_TIMEOUT,
+        }
       );
 
       socket.onopen = () => {
@@ -63,19 +68,18 @@ export default class UOLLiveMatchService {
         resolve(socket);
       };
 
-      socket.on("ping", this.heartbeat);
-
       socket.onclose = (error: WebSocket.CloseEvent) => {
         reject(this.shutdown(error));
       };
     });
 
-  startup = async (matchId: number, chatId: number) => {
+  startup = async (chatId: number) => {
     if (this.connection && this.connection.OPEN) {
       return this.connection;
     }
 
-    const connection = await this.connect(matchId);
+    const connection = await this.connect();
+    this.heartbeat();
 
     this.addChatId(chatId);
 
@@ -85,17 +89,13 @@ export default class UOLLiveMatchService {
   };
 
   private heartbeat = () => {
-    this.pingTimeout && clearTimeout(this.pingTimeout);
-
-    this.pingTimeout = setTimeout(() => {
-      console.log(
-        `[${this.matchId}] Terminating ${this.matchId} because of heartbeat.`
-      );
-      this.connection.terminate();
-    }, WS_MAX_TIMEOUT);
+    this.pingTimeout = setInterval(() => {
+      this.connection && this.connection.ping();
+    }, constants.WS_PING_TIMEOUT_MS);
   };
 
   shutdown = (error: WebSocket.CloseEvent) => {
+    this.pingTimeout && clearInterval(this.pingTimeout);
     this.connection && this.connection.close();
 
     if (this.lastEvent) {
@@ -117,6 +117,7 @@ export default class UOLLiveMatchService {
   };
 
   isAlreadyWatching = (chatId: number) => this.chatIds.includes(chatId);
+
   removeChatId = (chatId: number) =>
     (this.chatIds = this.chatIds.filter((id) => chatId !== id));
 
@@ -135,9 +136,11 @@ export default class UOLLiveMatchService {
     const data = JSON.parse(rawData);
 
     if (data && data.invalidChannel) return this.connection.close();
+    if (data && data.unsubscribed) return this.connection.close();
 
     const event = new UOLWSMatchEvent({ ...data });
     const feed = event.subchannels?.["minute-by-minute"];
+    const score = event.subchannels?.[this.channelName];
 
     if (feed && feed.timeline.length === 0) return;
 
@@ -151,7 +154,6 @@ export default class UOLLiveMatchService {
     this.notifyChatIds(message);
   };
 
-  // TODO: Something is throwing an error because message is empty
   notifyChatIds = (message: string) => {
     for (let i = 0; i < this.chatIds.length; i++) {
       const chatId = this.chatIds[i];
@@ -161,6 +163,10 @@ export default class UOLLiveMatchService {
   };
 
   notifyChatId = (chatId: number, message: string) => {
+    if (!message) {
+      return;
+    }
+
     this.telegram.sendMessage(chatId, message);
   };
 }
