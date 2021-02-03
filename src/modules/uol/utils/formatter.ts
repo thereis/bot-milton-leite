@@ -67,9 +67,15 @@ const getMatchStageMessage = (
   let message = "";
 
   switch (stage) {
+    case MatchStageEnum.EARLY_GAME:
+      message = "Pré jogo";
+      break;
+
     case MatchStageEnum.FIRST_HALF:
     case MatchStageEnum.SECOND_HALF:
-      message = `${timeline.minute}' do ${timeline["match-stage"]}° tempo`;
+      message = timeline["first-card"]
+        ? `Autoriza o árbitro!`
+        : `${timeline.minute}' do ${timeline["match-stage"]}° tempo`;
       break;
 
     case MatchStageEnum.INTERVAL:

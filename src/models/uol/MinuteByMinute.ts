@@ -3,6 +3,7 @@ export enum MatchStageEnum {
   SECOND_HALF = 2,
   INTERVAL = 5,
   ENDED = 8,
+  EARLY_GAME = 9,
   AFTER_GAME = 10,
 }
 
@@ -27,6 +28,10 @@ export interface MinuteByMinuteEvent {
   minute: number;
   text?: string;
   team?: "home" | "away";
+  "first-card"?: boolean;
+  "extra-time"?: number;
+  "player-id"?: number;
+  "substitute-player-id"?: number;
 }
 
 export class MinuteByMinute {
