@@ -1,6 +1,6 @@
 export const DATE_FORMAT = "yyyy-MM-dd";
 export const OUTPUT_DATE_FORMAT = "dd-MM-yyyy";
-export const OUTPUT_DATE_FORMAT_WITH_TIME = "dd-MM-yyyy (EEEE)";
+export const OUTPUT_DATE_FORMAT_WITH_DAYWEEK = "dd-MM-yyyy (EEEE)";
 export const OUTPUT_TIME_FORMAT = "EEEE";
 
 export enum LEAGUES {

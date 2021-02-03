@@ -5,6 +5,7 @@ import groupBy from "lodash/groupBy";
 
 import { Match, MatchStatusEnum } from "../../../models/Match";
 import { format, parse, isAfter } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
 
 import { singleton } from "tsyringe";
 import { Dictionary } from "lodash";
@@ -52,7 +53,9 @@ export default class UOLMatchesService {
       new Date()
     );
 
-    return format(newDate, constants.OUTPUT_DATE_FORMAT);
+    return format(newDate, constants.OUTPUT_DATE_FORMAT_WITH_DAYWEEK, {
+      locale: ptBR,
+    });
   };
 
   getLoadedMatches() {

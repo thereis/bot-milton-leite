@@ -40,7 +40,7 @@ export const formatUpcomingMatch = (
 
   const matchDateAndDay = format(
     parsedDate,
-    constants.OUTPUT_DATE_FORMAT_WITH_TIME,
+    constants.OUTPUT_DATE_FORMAT_WITH_DAYWEEK,
     {
       locale: brazilianLocale,
     }
