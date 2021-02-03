@@ -18,6 +18,15 @@ export default class BotService {
   };
 
   registerCommands = async () => {
+    this.bot.command("start", async (ctx) => {
+      const { username } = ctx.from!;
+
+      return ctx.reply(
+        `<b>Olá ${username}, seja bem vindo!</b>\n\nPara visualizar os comandos disponíveis, pressione o botão <b>[/]</b> que fica antes dos emojis ;)`,
+        { parse_mode: "HTML" }
+      );
+    });
+
     this.bot.command("hoje", async (ctx) => {
       await ctx.replyWithChatAction("typing");
 
