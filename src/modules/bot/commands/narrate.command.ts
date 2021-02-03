@@ -6,7 +6,7 @@ import chunk from "lodash/chunk";
 
 import UOLMatchesService from "../../uol/matches/matches.service";
 import UOLLiveMatchesController from "../../uol/live/live.controller";
-import { CallbackQuery } from "telegraf/typings/telegram-types";
+import { CallbackQuery, Message } from "telegraf/typings/telegram-types";
 
 @autoInjectable()
 export default class BotNarrateCommand {
@@ -27,6 +27,23 @@ export default class BotNarrateCommand {
           JSON.stringify({ action: "watch", id })
         )
       );
+  };
+
+  kicked = (ctx: Context & { message: Message.LeftChatMemberMessage }) => {
+    if (ctx.message.left_chat_member.id !== ctx.botInfo.id) return;
+
+    const chatId = ctx.chat?.id!;
+
+    const currentMatch = this.uolLiveMatchesController.isAlreadyWatching(
+      chatId
+    );
+
+    if (!currentMatch) return;
+
+    this.uolLiveMatchesController.removeChatIdFromContainer(
+      currentMatch.matchId,
+      currentMatch.chatId
+    );
   };
 
   stop = async (ctx: Context) => {

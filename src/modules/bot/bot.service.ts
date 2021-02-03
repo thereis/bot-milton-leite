@@ -54,5 +54,8 @@ export default class BotService {
     this.bot.command("narrar", this.botNarrateCommand.execute);
     this.bot.command("parar", this.botNarrateCommand.stop);
     this.bot.action(/watch/g, this.botNarrateCommand.watch);
+
+    // We will stop the bot narration for that channel if he got kicked
+    this.bot.on("left_chat_member", this.botNarrateCommand.kicked);
   };
 }
