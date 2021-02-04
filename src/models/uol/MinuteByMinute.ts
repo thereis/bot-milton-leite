@@ -9,6 +9,7 @@ export enum MatchStageEnum {
 
 export enum MatchEventType {
   EVENT = 1,
+  VIDEO = 3,
 }
 
 export enum MatchEventSubType {
@@ -17,6 +18,7 @@ export enum MatchEventSubType {
   YELLOW_CARD = 4,
   RED_CARD = 5,
   SUBSTITUTION = 6,
+  PENALTY = 7,
 }
 
 export interface MinuteByMinuteEvent {

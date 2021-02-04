@@ -71,10 +71,6 @@ export default class UOLLiveMatchService {
       socket.onclose = (error: WebSocket.CloseEvent) => {
         reject(this.shutdown(error));
       };
-
-      socket.on("pong", () => {
-        console.log(`[${this.matchId}] Chats connected ${this.chatIds.length}`);
-      });
     });
 
   startup = async (chatId: number) => {

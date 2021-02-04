@@ -83,7 +83,7 @@ export default class BotNarrateCommand {
   watch = async (ctx: Context) => {
     const { data } = ctx.callbackQuery as CallbackQuery.DataCallbackQuery;
     const { id: matchId } = JSON.parse(data);
-    const chatId = ctx.chat?.id!;
+    const { id: chatId, type } = ctx.chat!;
     const messageId = ctx.callbackQuery?.message?.message_id!;
 
     const isAlreadyWatching = this.uolLiveMatchesController.isAlreadyWatching(
@@ -105,6 +105,10 @@ export default class BotNarrateCommand {
 
     await ctx.deleteMessage(messageId);
 
-    this.uolLiveMatchesController.addChatIdToMatchContainer(matchId, chatId);
+    this.uolLiveMatchesController.addChatIdToMatchContainer(
+      matchId,
+      chatId,
+      type
+    );
   };
 }
