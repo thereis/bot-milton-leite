@@ -7,6 +7,8 @@ import BotService from "../../bot/bot.service";
 import UOLMatchesService from "../matches/matches.service";
 import UOLLiveMatchService from "./live.service";
 
+import { Match } from "../../../models/Match";
+
 type ChatTypes = "private" | "group" | "supergroup" | "channel";
 
 interface ICreateMatchContainer {
@@ -19,7 +21,7 @@ interface IMatchContainer {
 }
 
 interface IConnectedToMatch {
-  matchId: number;
+  match: Match;
   chatId: number;
   chatType: ChatTypes;
 }
@@ -45,21 +47,26 @@ export default class UOLLiveMatchesController {
 
     if (!connectedChats.length) return;
 
-    console.log(`There are ${connectedChats.length} active chats.`);
+    const groupedChats = groupBy(this.connectedToMatches, "match.id");
 
-    const groupedChats = groupBy(this.connectedToMatches, "matchId");
+    for (let [, chats] of Object.entries(groupedChats)) {
+      let groupTypes: { [key: string]: number } = {};
+      let matchName = `${chats[0].match.time1["sigla"]}x${chats[0].match.time2["sigla"]}`;
 
-    for (let [matchId, chats] of Object.entries(groupedChats)) {
-      const groups = chats.reduce(
-        (acc, chat) => ({
-          ...acc,
+      for (const chat of chats) {
+        groupTypes = {
+          ...groupTypes,
           [chat.chatType]:
-            acc && acc[chat.chatType] ? acc[chat.chatType] + 1 : 1,
-        }),
-        {} as { [key: string]: number }
-      );
+            groupTypes && groupTypes[chat.chatType]
+              ? groupTypes[chat.chatType] + 1
+              : 1,
+        };
+      }
 
-      console.log(`[${matchId}]: ${chats.length} active connections.`, groups);
+      console.log(
+        `[${matchName}]: ${chats.length} active connections.`,
+        groupTypes
+      );
     }
   };
 
@@ -106,7 +113,7 @@ export default class UOLLiveMatchesController {
       telegram: this.botService.bot.telegram,
     });
 
-    this.connectedToMatches.push({ matchId, chatId, chatType });
+    this.connectedToMatches.push({ match, chatId, chatType });
 
     return this.matchesContainer.set(matchId, {
       service,
@@ -121,15 +128,22 @@ export default class UOLLiveMatchesController {
     chatId: number,
     chatType: ChatTypes
   ) => {
+    const match = this.uolMatchesService.getById(matchId);
     const container = this.getMatchContainer(matchId);
 
     if (!container) {
       return this.createMatchContainer({ matchId, chatId, chatType });
     }
 
+    if (!match) {
+      throw new Error(
+        `Could not find match ${matchId} on addChatIdToMatchContainer.`
+      );
+    }
+
     container.service.addChatId(chatId);
 
-    this.connectedToMatches.push({ chatId, matchId, chatType });
+    this.connectedToMatches.push({ match, chatId, chatType });
   };
 
   removeChatIdFromContainer = (matchId: number, chatId: number) => {

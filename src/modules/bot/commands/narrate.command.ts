@@ -41,7 +41,7 @@ export default class BotNarrateCommand {
     if (!currentMatch) return;
 
     this.uolLiveMatchesController.removeChatIdFromContainer(
-      currentMatch.matchId,
+      currentMatch.match.id,
       currentMatch.chatId
     );
   };
@@ -60,7 +60,7 @@ export default class BotNarrateCommand {
     }
 
     this.uolLiveMatchesController.removeChatIdFromContainer(
-      currentMatch.matchId,
+      currentMatch.match.id,
       currentMatch.chatId
     );
 
