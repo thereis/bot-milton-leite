@@ -52,6 +52,7 @@ export default class UOLLiveMatchesController {
     for (let [matchId, chats] of Object.entries(groupedChats)) {
       const groups = chats.reduce(
         (acc, chat) => ({
+          ...acc,
           [chat.chatType]:
             acc && acc[chat.chatType] ? acc[chat.chatType] + 1 : 1,
         }),
