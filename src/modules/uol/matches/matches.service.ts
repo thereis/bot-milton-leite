@@ -17,7 +17,10 @@ export default class UOLMatchesService {
   private matches: Match[] = [];
   private filteredMatches: Match[] = [];
   private groupedMatches: Dictionary<Match[]> = {};
-  private today = format(new Date(), constants.DATE_FORMAT);
+
+  private get today() {
+    return format(new Date(), constants.DATE_FORMAT);
+  }
 
   private matchesUrl: string =
     "https://www.uol.com.br/esporte/service/?loadComponent=match-service&contentType=json";
@@ -32,7 +35,7 @@ export default class UOLMatchesService {
     this.filteredMatches = response.matches;
     this.loaded = true;
 
-    return this.matches;
+    return response.matches;
   };
 
   reload = async () => {
