@@ -1,6 +1,6 @@
 # Milton Leite BOT
 
-This bot was originally created to narrate soccer matches from Brasileirão Série A. But the main idea is under development.
+This bot was originally created to narrate soccer matches from Brasileirão Série A/Campeonato Paulista Série A. But the main idea is under development.
 
 ## Wanna test it?
 

@@ -42,7 +42,7 @@ export default class UOLMatchesController {
 
     const results = matches.map((match) => formatTodayMatch(match));
 
-    return `<b>As partidas de hoje no Brasileirão:</b>\n\n${results.join(
+    return `<b>As partidas de hoje no Paulistão 2021:</b>\n\n${results.join(
       "\n"
     )}`;
   };
@@ -55,7 +55,7 @@ export default class UOLMatchesController {
 
     const results = matches.map((match) => formatMatchResult(match));
 
-    return `<b>Resultados das partidas do Brasileirão:</b>\n\n${results.join(
+    return `<b>Resultados das partidas do Paulistão 2021:</b>\n\n${results.join(
       "\n"
     )}`;
   };
