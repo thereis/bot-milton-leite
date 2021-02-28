@@ -1,5 +1,5 @@
-hoje - Exibe quais partidas do Brasileirão acontecerão hoje.
-proximas_partidas - Exibe as partidas que acontecerão hoje e nos próximos dias.
-narrar - Escolha uma partida e fique por dentro de todos os acontecimentos dela.
-parar - Pare a narração.
-resultados - Veja os últimos resultados do Brasileirão.
+hoje - Exibe quais partidas acontecerão hoje no campeonato Paulista.
+proximas_partidas - Exibe informações das partidas do campeonato Paulista que acontecerão hoje e nos próximos dias.
+narrar - Escolha uma partida e acompanhe todos os acontecimentos em tempo real.
+parar - Deixe de acompanhar uma partida.
+resultados - Veja os últimos resultados do campeonato Paulista.

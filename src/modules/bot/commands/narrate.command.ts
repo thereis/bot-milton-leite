@@ -18,7 +18,7 @@ export default class BotNarrateCommand {
 
   options = () => {
     return this.uolMatchesService
-      .filterByIdCompeticao(LEAGUES.BRASILEIRAO)
+      .filterByIdCompeticao(LEAGUES.PAULISTA)
       .filterByTodayMatches()
       .getMatches()
       .map(({ id, time1, time2 }) =>

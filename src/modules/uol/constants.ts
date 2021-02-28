@@ -5,6 +5,7 @@ export const OUTPUT_TIME_FORMAT = "EEEE";
 
 export enum LEAGUES {
   BRASILEIRAO = "30",
+  PAULISTA = "104",
 }
 
 export const MATCH_UPDATER_TIMEOUT = 60000 * 60 * 6; // 6h

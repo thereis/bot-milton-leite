@@ -15,6 +15,7 @@ import { MatchStatusEnum } from "../../../models/Match";
 @singleton()
 export default class UOLMatchesController {
   private reloadInterval?: NodeJS.Timeout;
+  private currentLeague: LEAGUES = LEAGUES.PAULISTA;
 
   constructor(private uolService: UOLMatchesService) {
     this.matchUpdater();
@@ -31,7 +32,7 @@ export default class UOLMatchesController {
 
   getTodayMatches = () => {
     const matches = this.uolService
-      .filterByIdCompeticao(LEAGUES.BRASILEIRAO)
+      .filterByIdCompeticao(this.currentLeague)
       .filterByTodayMatches()
       .getMatches();
 
@@ -48,7 +49,7 @@ export default class UOLMatchesController {
 
   getMatchResults = () => {
     const matches = this.uolService
-      .filterByIdCompeticao(LEAGUES.BRASILEIRAO)
+      .filterByIdCompeticao(this.currentLeague)
       .filterByStatus(MatchStatusEnum.COMPLETED)
       .getMatches();
 
@@ -63,7 +64,7 @@ export default class UOLMatchesController {
     let upcomingMatches = "";
 
     const groupedMatches = this.uolService
-      .filterByIdCompeticao(LEAGUES.BRASILEIRAO)
+      .filterByIdCompeticao(this.currentLeague)
       .filterByDate()
       .sortByDate()
       .groupByData()
