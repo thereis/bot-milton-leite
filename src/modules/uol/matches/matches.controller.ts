@@ -15,7 +15,7 @@ import { MatchStatusEnum } from "../../../models/Match";
 @singleton()
 export default class UOLMatchesController {
   private reloadInterval?: NodeJS.Timeout;
-  private currentLeague: LEAGUES = LEAGUES.PAULISTA;
+  private currentLeague: LEAGUES = LEAGUES.BRASILEIRAO;
 
   constructor(private uolService: UOLMatchesService) {
     this.matchUpdater();
